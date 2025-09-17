@@ -1,6 +1,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             if (!isMobileDevice()) {
-                showToast('如需获取分享链接，请关闭<code>沉浸式翻译</code>插件<br>否则会引起画面形变');
+                showToast('如需复制分享内容，请关闭<code>沉浸式翻译</code>插件<br>否则可能会影响页面显示');
             }
             fetchExchangeRates();
         });
@@ -25,7 +25,7 @@
             }, 6000);
         }
 
-        function takeScreenshot() {
+        function shareMarkdown() {
             const resultSection = document.querySelector('.result');
             const screenshotResult = document.getElementById('screenshotResult');
             const loadingDiv = document.getElementById('loading');
