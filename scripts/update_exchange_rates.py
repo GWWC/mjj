@@ -11,12 +11,19 @@ def main() -> None:
 
     if not api_url:
       raise RuntimeError("Missing EXCHANGE_API_URL secret")
+        raise RuntimeError("Missing EXCHANGE_API_URL secret")
 
     params = {}
+    parsed_url = parse.urlsplit(api_url)
+    query_params = dict(parse.parse_qsl(parsed_url.query, keep_blank_values=True))
     if api_key:
       params["access_key"] = api_key
+        query_params["access_key"] = api_key
 
     url = f"{api_url}?{parse.urlencode(params)}" if params else api_url
+    url = parse.urlunsplit(
+        parsed_url._replace(query=parse.urlencode(query_params, doseq=True))
+    )
 
     req = request.Request(url, headers={"User-Agent": "mjj-build-rate-updater/1.0"})
     with request.urlopen(req, timeout=30) as resp:
@@ -42,4 +49,3 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
