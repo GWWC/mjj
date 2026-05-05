@@ -1,20 +1,8 @@
 #!/usr/bin/env python3
 import json
 import os
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone, timedelta
 from urllib import parse, request
-
-
-def build_request_url(api_url: str, api_key: str) -> str:
-    parsed_url = parse.urlsplit(api_url)
-    query_params = dict(parse.parse_qsl(parsed_url.query, keep_blank_values=True))
-
-    if api_key:
-        query_params["access_key"] = api_key
-
-    return parse.urlunsplit(
-        parsed_url._replace(query=parse.urlencode(query_params, doseq=True))
-    )
 
 
 def main() -> None:
@@ -24,7 +12,14 @@ def main() -> None:
     if not api_url:
         raise RuntimeError("Missing EXCHANGE_API_URL secret")
 
-    url = build_request_url(api_url, api_key)
+    parsed_url = parse.urlsplit(api_url)
+    query_params = dict(parse.parse_qsl(parsed_url.query, keep_blank_values=True))
+    if api_key:
+        query_params["access_key"] = api_key
+
+    url = parse.urlunsplit(
+        parsed_url._replace(query=parse.urlencode(query_params, doseq=True))
+    )
 
     req = request.Request(url, headers={"User-Agent": "mjj-build-rate-updater/1.0"})
     with request.urlopen(req, timeout=30) as resp:
@@ -50,4 +45,3 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
